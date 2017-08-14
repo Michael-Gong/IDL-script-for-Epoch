@@ -1,0 +1,76 @@
+pro davie,density=a,field=b,phase=c
+;;;;;this progress gives the parameters of the pic simulations;;;;;;
+pi        =      3.1415926535897932384626d
+q0 = 1.602176565d-19 ; C
+m0 = 9.10938291d-31  ; kg
+v0 = 2.99792458d8    ; m/s^2
+kb = 1.3806488d-23   ; J/K
+mu0 = 4.0d-7 * !dpi  ; N/A^2
+epsilon0 = 8.8541878176203899d-12 ; F/m
+h_planck = 6.62606957d-34 ; J s
+;;;;;;;;;;;;;;;;;;;;;;;;;only edit here;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;parameters of simulation;;;;;;;;;;;;;;;;;;;;;;
+starttime =      1      ;;    the start time of plot in laser period      
+endtime   =      36     ;;    the end time of plot   
+interval  =       1     ;;    the time interval of plot
+nx        =      800
+ny        =      500
+nz        =      500
+phaseresolution  = 1000            ;; resolution in fist_fn
+dir       =      'Data'
+nspecie   =      1
+sname     =      strarr(nspecie)
+sname[0]  =      'electron'        ;; then name of the species to plot
+;sname[1]  =      'proton'
+;sname[2]  =      'electron7'
+nfield    =      2
+fname     =      strarr(nfield)
+fname[0]  =      'ez'
+fname[1]  =      'ey'
+;fname[2]  =      'jx'
+nphaspace =      1
+pname     =      strarr(nphaspace)
+pname[0]  =      'x_px'
+;pname[1]  =      'y_py'  
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;parameters of visulisation;;;;;;;;;;;;;;;;;;;;
+filetype  =      'eps'  ;;the filetype of the output
+plotarea  =     [0,799,0,499] ;;xmin xmax ymin ymax in cells
+densitymax=     -0.01   ;;the maximum density in n_c, negative value for automatic
+denlevel  =      50     ;;    the number of levels in density contour 
+fieldmax  =     -10     ;;    the maximum field normalized    
+fielevel  =      20     ;;    the number of levels in field contour
+phalevel  =      20
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;the end;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+save,filename='./sav/parameter.sav'
+print,'_______________________________________________________'
+print,'|                                                     |'   
+print,'|        ######      ###  ##       ##  ###  ######### |'
+print,'|       ##   ###    ####  ##      ##  ###  #########  |'
+print,'|      ##     ##   ## ##  ##     ##  ###  ##          |'
+print,'|     ##      ##  ##  ##  ##    ##  ###  ######       |'
+print,'|    ##      ##  ##   ##  ##   ##  ###  ######        |'
+print,'|   ##      ##  ## ## ##  ##  ##  ###  ##             |' 
+print,'|  ##     ###  ##     ##  ## ##  ###  #########       |'
+print,'| ########    ##      ##  ####  ###  ##########       |'
+print,'|                                                     |'
+print,'|_____________________BETA  0.6_______________________|'
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;the procedures to run;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+grid
+if keyword_set(a) then begin
+density
+plotdensity
+endif
+if keyword_set(b) then begin
+field
+plotfield
+endif
+if keyword_set(c) then begin
+phasespace
+plotphase
+endif
+print,'finished,OK'
+end

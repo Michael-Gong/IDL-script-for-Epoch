@@ -1,0 +1,18 @@
+pro plotdensity
+restore,'./sav/parameter.sav'
+restore,'./sav/grid.sav'
+restore,'./sav/density.sav'
+set_plot,'ps'
+for n=0,nspecie-1 do begin
+for i=0,(endtime-starttime)/interval do begin
+device,filename='./eps/density-'+sname[n]+'-'+strtrim(string(starttime+interval*i),2)+'.'+filetype,/color,set_font='Helvetica',/encapsulated,bits_per_pixel=8,/inches,xsize=10,ysize=8,font_size=15
+!P.MULTI=[0,2]
+loadct,39
+levels=findgen(10)*max(b[*,*,i,n])/10
+contour,congrid(b[plotarea[0]:plotarea[1],plotarea[2]:plotarea[3],i,n],500,200),congrid(x[plotarea[0]:plotarea[1],i],500),congrid(y[plotarea[2]:plotarea[3],i],200),levels=levels,/fill,title='Time is '+strtrim(string(realtime[i]),2),xtitle='x [micron]',ytitle='y [micron]',xstyle=9,ystyle=9,pos=[0.2,0.2,0.8,0.8],charthick=1.5,charsize=1.5
+xx=rebin(transpose(levels),4,10)
+contour,xx,findgen(4),levels,levels=levels,/fill,pos=[0.9,0.25,0.95,0.8],xstyle=4,ystyle=9,charthick=1.5,charsize=0.8
+device,/close
+endfor
+endfor
+end
