@@ -1,0 +1,19 @@
+;stage program calculate the energy conversion during the process
+
+pro stage,n1,gap,n2,part,macro,sum
+n=n1-n2+1
+laser     =dblarr(n)
+electron  =dblarr(n)
+photon    =dblarr(n)
+print,'start calculate energy conversion'
+  for i=n1,n2 do begin 
+     a=getdata(i)
+     laser[i-n1]    = epsilon0*total(a.ez^2)*40.0^3/1.0e6*1.0e-18
+     
+     numelectron    = a.en_electron
+     enelectron     = a.grid_en_electron.x
+     electron[i-n1] = total(numelectron*enelectron)/part*sum/macro
+     
+     numphoton      = a.en_photon
+     enphoton       = a.grid_en_photon.x
+     phenergy       = total(numphoton*enphoton)/part*sum/macro
