@@ -1,0 +1,15 @@
+.r ./rk.pro
+.r ./factor.pro
+.r ./crossp2.pro
+.r ./crossp3.pro
+.r ./dotp.pro
+.r ./sw.pro
+.r ./velocity.pro
+.r ./swfield.pro
+.r ./plotsw.pro
+.r ./sw2d.pro
+.r ./swfield2d.pro
+.r ./plotsw2d.pro
+.r ./ha.pro
+.r ./hatrace.pro
+.r ./hatraceso.pro
