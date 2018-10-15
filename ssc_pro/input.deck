@@ -1,0 +1,124 @@
+begin:constant
+  laser_lamada     = 1.0*micron
+  laser_omega      = 2.0*pi*c/laser_lamada
+  laser_period     = laser_lamada/c
+  x_m              = 50*micron
+  laser_k          = 2*pi/laser_lamada
+  w0               = 5.0*micron
+  rayleigh_length  = pi*w0^2/laser_lamada
+  wz               = w0*sqrt(1+(x_m/rayleigh_length)^2)
+  radius_curv      = x_m*(1.0+(rayleigh_length/x_m)^2)
+
+  a0               = 350
+  Intensity        = (1.37*10^18)*a0^2/((laser_lamada^2)*10^12)       #intensity[W/cm^2]
+  n_critic         = 1.1*10^27/((laser_lamada^2)*10^12)
+end:constant
+
+begin:control
+  nx               = 4000
+  ny               = 4000
+  # final time of simulation
+  t_end            = 75.0*laser_period
+  # restart_snapshot = 101
+  # size of domain
+  x_min            =  0.0*micron
+  x_max            =  100.0*micron
+  y_min            = -50*micron
+  y_max            =  50*micron
+  dt_multiplier    = 0.8
+  stdout_frequency = 100
+  dlb_threshold    = 0.75
+  particle_tstart  = 5.0*laser_period
+#  radiation_tstart = 0.0*laser_period
+#  merge_tstart     = 10.0*laser_period
+#  merge_dt         = 0.5*laser_period
+end:control
+
+begin:boundaries
+  bc_x_min         = simple_outflow
+  bc_x_max         = simple_laser
+  bc_y_min         = simple_outflow
+  bc_y_max         = simple_outflow
+end:boundaries
+
+begin:species
+   name            = electron
+   charge          = -1.0
+   mass            = 1.0
+   npart           = 3.0e4
+   tracer          = T
+   temp_ev         = 5.0e6
+   density_min     = 1.0e-6*n_critic
+   density         = if((abs(x-2.5e-6) lt 2.5e-6) and (abs(y) lt 2.5e-6), 0.005*n_critic, 0)
+   drift_x         = 1000*me*c
+   dumpmask        = always
+   identify:electron
+end:species
+
+#begin:subset
+#   name            = t
+#   random_fraction = 0.001
+#   include_species:electron
+#end:subset
+
+begin:laser
+  boundary         = x_max
+  intensity_w_cm2  = Intensity*w0/wz
+  lambda           = laser_lamada
+  profile          = gauss(y,0,wz)
+  t_profile        = gauss(time,4*laser_period,3*laser_period)
+  pol_angle        = 0.0
+  phase            = pi/2-(-laser_k*x_m-laser_k*(y^2)/(2*radius_curv)+atan(x_m/rayleigh_length))
+  t_start          = 0.0
+  t_end            = 8*laser_period
+end:laser
+
+begin:qed
+  use_qed          = T
+  qed_start_time   = 0.0*laser_period
+  produce_photons  = F
+  photon_dynamics  = F
+  use_radiation_reaction = T
+  photon_energy_min= 1.0*mev
+  produce_pairs    = F
+end:qed
+
+begin:output
+  # number of timesteps between output dumps
+  dt_snapshot      = 1.0*laser_period
+  time_start       = 47.00*laser_period
+  time_stop        = 100.0*laser_period
+  dump_first       = F
+  dump_last        = F
+  dt_average       = 1.0*laser_period
+  # restart_dump_every = 3
+  # Properties on grid
+  grid             = always
+#  ex               = always
+  ey               = always
+#  ez               = always
+#  bx               = always
+#  by               = always
+#  bz               = always
+#  jx               = always
+#  jz               = always
+#  px               = always
+#  py               = always
+#  pz               = always
+#  gamma            = always
+#  id               = always
+  particle_grid    = always
+#  particle_eta     = always
+#  particle_radn    = always
+#  particle_radt    = always
+#  ekbar            = always + species + no_sum
+#  ekflux           = always + species + no_sum
+#  mass_density     = always + species
+#  charge_density   = always + species
+#  number_density   = always + species + no_sum
+#  poynt_flux       = always
+#  total_energy_sum = always
+#  temperature      = always + species
+#  distribution_functions = always
+end:output
+
